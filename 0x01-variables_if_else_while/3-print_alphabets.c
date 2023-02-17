@@ -1,7 +1,7 @@
 #include <stdio.h>
 /**
  * main - main block
- * A program that prints the alphabet
+ *Description: A program that prints the alphabet
  * in lower case, and then in uppercase
  * followed by new line
  * Retunrn: 0
