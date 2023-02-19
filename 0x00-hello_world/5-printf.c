@@ -1,15 +1,12 @@
 #include <stdio.h>
-
 /**
- * main - prints "with proper grammar, but the outcome is
- * a piece of art," followed newline
- * Return: Always 0.
+ * main - entry point to print a c program using printf
  *
+ * Return: 0
  */
 
-int mainn(void)
-
+int main(void)
 {
-printf("with proper grammar, but the outcome is a piece of art,\n");
-return (0);
+	printf("with proper grammar, but the outcome is a piece of art,\n");
+	return (0);
 }	
