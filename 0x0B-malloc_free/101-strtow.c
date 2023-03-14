@@ -1,74 +1,97 @@
 #include "main.h"
 #include <stdlib.h>
 
-/**
- * ch_free_grid - fxn that splits a string into words
- * @grid: array of char.
- * @height: height of array.
- *
- * Return: no return
- */
-void ch_free_grid(char **grid, unsigned int height)
-{
-	if (grid != NULL && height != 0)
-	{
-		for (; height > 0; height--)
-			free(grid[height]);
-		free(grid[height]);
-		free(grid);
-	}
-}
+void util(char **, char *);
+void create_word(char **, char *, int, int, int);
 
 /**
  * strtow - splits a string into words.
- * @str: string.
+ * @str: the string
  *
- * Return: pointer of an array of integers
+ * Return: returns a pointer to an array of strings (words)
  */
 char **strtow(char *str)
 {
-	unsigned int height, i, j, k, c;
-	char **out_s;
+	int i, flag, len;
+	char **words;
 
-	if (str == NULL || *str == '\0')
+	if (str == NULL || str[0] == '\0' || (str[0] == ' ' && str[1] == '\0'))
 		return (NULL);
 
-	for (c = height = 0; str[c] != '\0'; c++)
-		if (str[c] != ' ' && (str[c + 1] == ' ' || str[c + 1] == '\0'))
-			height++;
-
-	out_s = malloc((height + 1) * sizeof(char *));
-
-	if (out_s == NULL || height == 0)
+	i = flag = len = 0;
+	while (str[i])
 	{
-		free(out_s);
-		return (NULL);
+		if (flag == 0 && str[i] != ' ')
+			flag = 1;
+		if (i > 0 && str[i] == ' ' && str[i - 1] != ' ')
+		{
+			flag = 0;
+			len++;
+		}
+		i++;
 	}
 
-	for (i = k = 0; i < height; i++)
+	len += flag == 1 ? 1 : 0;
+	if (len == 0)
+		return (NULL);
+
+	words = (char **)malloc(sizeof(char *) * (len + 1));
+	if (words == NULL)
+		return (NULL);
+
+	util(words, str);
+	words[len] = NULL;
+	return (words);
+}
+
+/**
+ * util - a util function for fetching words into an array
+ * @words: the strings array
+ * @str: the string
+ */
+void util(char **words, char *str)
+{
+	int i, j, start, flag;
+
+	i = j = flag = 0;
+	while (str[i])
 	{
-		for (c = k; str[c] != '\0'; c++)
+		if (flag == 0 && str[i] != ' ')
 		{
-			if (str[c] == ' ')
-				k++;
-
-			if (str[c] != ' ' && (str[c + 1] == ' ' || str[c + 1] == '\0'))
-			{
-				out_s[i] = malloc((c - k + 2) * sizeof(char));
-
-				if (out_s[i] == NULL)
-				{
-					ch_free_grid(out_s, i);
-					return (NULL);
-				}
-				break;
-			}
+			start = i;
+			flag = 1;
 		}
 
-		for (j = 0; k <= c; k++, j++)
-			out_s[i][j] = str[k];
-		out_s[i][j] = '\0';
+		if (i > 0 && str[i] == ' ' && str[i - 1] != ' ')
+		{
+			create_word(words, str, start, i, j);
+			j++;
+			flag = 0;
+		}
+
+		i++;
 	}
-	out_s[i] = NULL;
-	return (out_s);
+
+	if (flag == 1)
+		create_word(words, str, start, i, j);
+}
+
+/**
+ * create_word - creates a word and insert it into the array
+ * @words: the array of strings
+ * @str: the string
+ * @start: the starting index of the word
+ * @end: the stopping index of the word
+ * @index: the index of the array to insert the word
+ */
+void create_word(char **words, char *str, int start, int end, int index)
+{
+	int i, j;
+
+	i = end - start;
+	words[index] = (char *)malloc(sizeof(char) * (i + 1));
+
+	for (j = 0; start < end; start++, j++)
+		words[index][j] = str[start];
+	words[index][j] = '\0';
 }
